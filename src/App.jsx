@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-
+import { useState, useEffect, useCallback, useRef } from "react";
+import HeroBackground from "./HeroBackground";
 // --- Local Image Imports ---
 import tsLogo from "./assets/TS_Logo.png";
 import servicePpf from "./assets/service-ppf.jpg";
@@ -10,9 +10,13 @@ import gallery4 from "./assets/gallery-4.jpg";
 import gallery7 from "./assets/gallery-7.jpg";
 import gallery8 from "./assets/gallery-8.jpg";
 
+// --- Local Video Imports ---
+import heroVideo1 from "./videos/hero-video-1.mov";
+import heroVideo2 from "./videos/hero-video-2.mov";
+
 /* ─── COLOR PALETTE — extracted directly from the TS logo ─────────────────
    Primary Blue  #1E7FD8   (main blue square)
-   Cyan          #00D4E8   (cyan stripe / "Thilina" text in light logo)
+   Cyan          #0f86c6   (cyan stripe / "Thilina" text in light logo)
    Purple        #8B6BB1   (purple corner accent)
    Grey text     #A0A0B0   (SINCE 1996 and "Stickers" wordmark)
    ───────────────────────────────────────────────────────────────────────── */
@@ -30,10 +34,10 @@ const T = {
     borderM: "rgba(255,255,255,0.13)",
     nav: "rgba(11,13,20,0.94)",
     blue: "#1E7FD8",
-    cyan: "#00D4E8",
+    cyan: "#0f86c6",
     purple: "#8B6BB1",
     blueDim: "rgba(30,127,216,0.12)",
-    cyanDim: "rgba(0,212,232,0.11)",
+    cyanDim: "rgba(15,134,198,0.13)",
     purpleDim: "rgba(139,107,177,0.11)",
     sh: "rgba(0,0,0,0.55)",
     isDark: true,
@@ -50,10 +54,10 @@ const T = {
     borderM: "rgba(0,0,0,0.14)",
     nav: "rgba(242,245,251,0.96)",
     blue: "#155BA0",
-    cyan: "#0097A7",
+    cyan: "#0f86c6",
     purple: "#6845A0",
     blueDim: "rgba(21,91,160,0.09)",
-    cyanDim: "rgba(0,151,167,0.09)",
+    cyanDim: "rgba(15,134,198,0.11)",
     purpleDim: "rgba(104,69,160,0.09)",
     sh: "rgba(0,0,0,0.08)",
     isDark: false,
@@ -285,6 +289,13 @@ export default function App() {
   const [stats, setStats] = useState([0, 0, 0, 0]);
   const [counted, setCounted] = useState(false);
 
+  // Video Player State
+  const [activeVideo, setActiveVideo] = useState(0);
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef(null);
+  const videos = [heroVideo1, heroVideo2];
+
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -379,7 +390,7 @@ export default function App() {
   }, []);
 
   const animateStats = useCallback(() => {
-    const targets = [28, 5000, 15, 1];
+    const targets = [28, 10000, 15, 1];
     const duration = 2000;
     const start = performance.now();
 
@@ -392,6 +403,35 @@ export default function App() {
     };
     requestAnimationFrame(step);
   }, []);
+
+  // Video Controls Handlers
+  const handleVideoEnd = () => {
+    setActiveVideo((prev) => (prev === 0 ? 1 : 0));
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      const progress =
+        (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      setVideoProgress(progress || 0);
+    }
+  };
+
+  const switchVideo = (index) => {
+    if (activeVideo !== index) {
+      setActiveVideo(index);
+      setVideoProgress(0);
+    }
+  };
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.load();
+      videoRef.current
+        .play()
+        .catch((e) => console.log("Autoplay prevented", e));
+    }
+  }, [activeVideo]);
 
   useEffect(() => {
     const t2 = setTimeout(() => setShown(true), 180);
@@ -520,7 +560,7 @@ export default function App() {
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html, body, #root { width: 100%; max-width: 100%; overflow-x: hidden; scroll-behavior: smooth; }
-        ::selection { background: #1E7FD8; color: #fff; }
+        ::selection { background: #0f86c6; color: #fff; }
         .nb { background: none; border: none; cursor: pointer; font-family: inherit; }
         
         .hw { overflow: hidden; }
@@ -546,18 +586,8 @@ export default function App() {
         
         .bg-noise { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); opacity: ${t.isDark ? 0.05 : 0.03}; pointer-events: none; }
 
-        /* NEW HERO ANIMATIONS */
-        .scan-line { position: absolute; top: 0; left: 0; right: 0; height: 100%; background: linear-gradient(to bottom, transparent, rgba(0, 212, 232, 0.3), transparent); background-size: 100% 4px; animation: scan 6s linear infinite; pointer-events: none; z-index: 10; opacity: 0.04; }
+        .scan-line { position: absolute; top: 0; left: 0; right: 0; height: 100%; background: linear-gradient(to bottom, transparent, rgba(15, 134, 198, 0.3), transparent); background-size: 100% 4px; animation: scan 6s linear infinite; pointer-events: none; z-index: 10; opacity: 0.04; }
         @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
-        
-        .float-card { animation: float-up-down 6s ease-in-out infinite; }
-        @keyframes float-up-down { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-
-        .draw-path { stroke-dasharray: 1200; stroke-dashoffset: 1200; animation: draw 4s ease-in-out infinite alternate; }
-        @keyframes draw { to { stroke-dashoffset: 0; } }
-
-        .laser-scan { animation: laser-sweep 4s ease-in-out infinite; }
-        @keyframes laser-sweep { 0%, 100% { transform: translateX(0); opacity: 0; } 15%, 85% { opacity: 1; } 50% { transform: translateX(250px); } }
 
         /* ABOUT & GALLERY REDESIGN CSS */
         .bg-blueprint-dark { background-color: #0D1020; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 24px 24px; }
@@ -582,8 +612,11 @@ export default function App() {
         .btn-ig:hover { transform: translateY(-2px); }
         .btn-ig::after { content: ''; position: absolute; inset: 0; background: ${t.bgC}; border-radius: 40px; z-index: -1; transition: background 0.3s; }
 
+        .fast-pulse { animation: fast-pulse 0.4s infinite alternate; }
+        @keyframes fast-pulse { 0% { opacity: 1; } 100% { opacity: 0.3; } }
+
         @media (prefers-reduced-motion: reduce) {
-          .animate-marquee, .scan-line, .float-card, .draw-path, .laser-scan { animation: none; }
+          .animate-marquee, .scan-line, .fast-pulse { animation: none; }
           .reveal { transition: none; opacity: 1; transform: none; }
           .feature-row:hover { transform: none; }
         }
@@ -596,7 +629,6 @@ export default function App() {
         @media (max-width: 480px) {
            .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
            .animate-marquee { animation: marquee 45s linear infinite; }
-           .float-card { animation: none; }
         }
       `}</style>
 
@@ -605,7 +637,7 @@ export default function App() {
         <div
           className="fixed inset-0 pointer-events-none z-50 transition-opacity duration-300"
           style={{
-            background: `radial-gradient(500px circle at ${mousePos.x}px ${mousePos.y}px, rgba(0,212,232,0.06), transparent 50%)`,
+            background: `radial-gradient(500px circle at ${mousePos.x}px ${mousePos.y}px, rgba(15,134,198,0.07), transparent 50%)`,
           }}
         />
       )}
@@ -615,8 +647,8 @@ export default function App() {
         className="fixed top-0 left-0 h-1 z-[9999] transition-all duration-150 ease-out"
         style={{
           width: `${progressWidth}%`,
-          background: t.blue,
-          boxShadow: `0 0 10px ${t.blue}`,
+          background: t.cyan,
+          boxShadow: `0 0 10px rgba(15,134,198,0.7)`,
         }}
       />
 
@@ -669,7 +701,7 @@ export default function App() {
               className="pbtn"
               style={{
                 background: t.cyan,
-                color: t.isDark ? "#0B0D14" : "#fff",
+                color: "#fff",
               }}
               onClick={() => go("contact")}
             >
@@ -725,7 +757,7 @@ export default function App() {
               className="pbtn w-full mt-4"
               style={{
                 background: t.cyan,
-                color: t.isDark ? "#0B0D14" : "#fff",
+                color: "#fff",
               }}
               onClick={() => {
                 go("contact");
@@ -743,8 +775,8 @@ export default function App() {
         id="home"
         className="relative flex flex-col justify-center min-h-screen px-[5%] overflow-hidden pt-24 pb-16"
       >
+        <HeroBackground t={t} />
         <div className="absolute inset-0 bg-noise mix-blend-overlay z-10" />
-        <div className="scan-line" />
 
         <div
           className="absolute inset-0 pointer-events-none z-0"
@@ -753,7 +785,7 @@ export default function App() {
           <div
             className="absolute top-[10%] right-[-5%] w-[520px] h-[520px] rounded-full blur-[80px]"
             style={{
-              background: `radial-gradient(circle, rgba(0,212,232,0.25) 0%, transparent 70%)`,
+              background: `radial-gradient(circle, rgba(15,134,198,0.25) 0%, transparent 70%)`,
             }}
           />
           <div
@@ -771,21 +803,25 @@ export default function App() {
         </div>
 
         <div className="max-w-[1300px] mx-auto w-full relative z-20 flex flex-col flex-grow justify-center mt-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8 items-center w-full">
-            <div className="max-w-[600px] pt-4 md:pt-0">
-              <div
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded text-[10px] font-extrabold tracking-[2.5px] uppercase mb-7 border"
-                style={{
-                  background: t.blueDim,
-                  borderColor: `${t.blue}30`,
-                  color: t.blue,
-                }}
-              >
-                <span
-                  className="w-2 h-2 rounded-full animate-pulse"
-                  style={{ background: t.blue }}
-                />
-                Established 1996 · Horana, Sri Lanka
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-stretch w-full">
+            <div className="max-w-[600px] pt-4 md:pt-0 flex flex-col justify-center py-6">
+              <div className="flex items-center gap-3 mb-8 self-start">
+                {/* Subtle structural accent line instead of a glowing dot */}
+                <div
+                  className="w-[3px] h-[14px] rounded-full"
+                  style={{ background: t.cyan }}
+                ></div>
+
+                {/* Clean, readable typography instead of microscopic all-caps */}
+                <p
+                  className="text-[13px] font-medium tracking-[0.5px] m-0"
+                  style={{ color: t.muted }}
+                >
+                  Established{" "}
+                  <span style={{ color: t.txt, fontWeight: 700 }}>1996</span>
+                  <span className="mx-2.5 opacity-40">|</span>
+                  Horana, Sri Lanka <span className="ml-0.5">🇱🇰</span>
+                </p>
               </div>
 
               <div className="hw">
@@ -797,7 +833,7 @@ export default function App() {
                     fontSize: "clamp(48px,9vw,110px)",
                     color: t.txt,
                     textShadow: t.isDark
-                      ? `0 0 40px rgba(0,212,232,0.15)`
+                      ? `0 0 40px rgba(15,134,198,0.15)`
                       : "none",
                   }}
                 >
@@ -811,9 +847,9 @@ export default function App() {
                     transitionDelay: ".18s",
                     fontFamily: "'Outfit',sans-serif",
                     fontSize: "clamp(48px,9vw,110px)",
-                    color: t.blue,
+                    color: t.cyan,
                     textShadow: t.isDark
-                      ? `0 0 60px rgba(30,127,216,0.3)`
+                      ? `0 0 60px rgba(15,134,198,0.35)`
                       : "none",
                   }}
                 >
@@ -840,8 +876,8 @@ export default function App() {
                   className="pbtn shadow-lg"
                   style={{
                     background: t.cyan,
-                    color: t.isDark ? "#0B0D14" : "#fff",
-                    boxShadow: `0 8px 20px ${t.cyan}30`,
+                    color: "#fff",
+                    boxShadow: `0 8px 20px rgba(15,134,198,0.3)`,
                   }}
                   onClick={() => go("services")}
                 >
@@ -849,7 +885,7 @@ export default function App() {
                 </button>
                 <button
                   className="obtn hover:bg-opacity-10"
-                  style={{ borderColor: t.blue, color: t.blue }}
+                  style={{ borderColor: t.cyan, color: t.cyan }}
                   onClick={() => go("gallery")}
                 >
                   View Our Work
@@ -857,167 +893,144 @@ export default function App() {
               </div>
             </div>
 
+            {/* Premium Edge-to-Edge Video Showcase Panel */}
             <div
-              className={`hwi${shown ? " in" : ""} w-full flex justify-center md:justify-end`}
+              className={`hwi${shown ? " in" : ""} w-full flex items-center justify-center md:justify-end self-stretch relative`}
               style={{ transitionDelay: ".55s" }}
             >
+              {/* Subtle integration glow behind the card */}
+              <div className="absolute -inset-4 bg-[#0f86c6] opacity-10 blur-2xl rounded-full pointer-events-none hidden md:block" />
+
               <div
-                className="float-card w-full max-w-[500px] rounded-2xl border backdrop-blur-md overflow-hidden relative shadow-2xl"
+                className="w-full relative overflow-hidden group aspect-video md:aspect-auto md:h-full flex flex-col"
                 style={{
-                  background: t.isDark
-                    ? "rgba(22, 26, 40, 0.65)"
-                    : "rgba(255, 255, 255, 0.85)",
-                  borderColor: `${t.cyan}40`,
-                  boxShadow: `0 10px 50px rgba(0,212,232,${t.isDark ? "0.12" : "0.06"})`,
+                  borderRadius: "12px",
+                  background: "#000",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderLeft: "4px solid #0f86c6",
+                  boxShadow: `0 20px 40px rgba(0,0,0,0.5), 0 0 40px rgba(15,134,198,0.1)`,
                 }}
               >
-                <div
-                  className="px-5 py-3 border-b flex justify-between items-center"
-                  style={{
-                    borderColor: t.border,
-                    background: t.isDark
-                      ? "rgba(0,0,0,0.2)"
-                      : "rgba(0,0,0,0.03)",
-                  }}
+                <video
+                  ref={videoRef}
+                  className="absolute inset-0 w-full h-full object-cover flex-1 min-h-0"
+                  playsInline
+                  muted={isMuted}
+                  autoPlay
+                  onEnded={handleVideoEnd}
+                  onTimeUpdate={handleTimeUpdate}
                 >
-                  <div className="flex gap-2">
-                    <span
-                      className="w-2.5 h-2.5 rounded-sm"
-                      style={{ background: t.purple }}
-                    />
-                    <span
-                      className="w-2.5 h-2.5 rounded-sm"
-                      style={{ background: t.cyan }}
-                    />
-                    <span
-                      className="w-2.5 h-2.5 rounded-sm"
-                      style={{ background: t.blue }}
-                    />
-                  </div>
-                  <div
-                    className="text-[9px] font-bold tracking-[3px] uppercase"
-                    style={{ color: t.cyan }}
-                  >
-                    System.Fabrication
-                  </div>
-                </div>
+                  <source src={videos[activeVideo]} />
+                </video>
 
-                <div className="p-8 pb-4 relative">
-                  <svg
-                    viewBox="0 0 400 200"
-                    className="w-full h-auto drop-shadow-lg"
-                    fill="none"
-                  >
-                    <path
-                      d="M 0 50 L 400 50 M 0 100 L 400 100 M 0 150 L 400 150"
-                      stroke={t.muted}
-                      strokeWidth="1"
-                      opacity="0.1"
-                    />
-                    <path
-                      d="M 100 0 L 100 200 M 200 0 L 200 200 M 300 0 L 300 200"
-                      stroke={t.muted}
-                      strokeWidth="1"
-                      opacity="0.1"
-                    />
-                    <path
-                      d="M 40 150 L 70 150 A 25 25 0 0 1 120 150 L 260 150 A 25 25 0 0 1 310 150 L 350 150 L 360 130 L 320 100 L 250 70 L 170 70 L 90 110 L 40 130 Z"
-                      stroke={t.muted}
-                      strokeWidth="2"
-                      opacity="0.3"
-                    />
-                    <circle
-                      cx="95"
-                      cy="150"
-                      r="18"
-                      stroke={t.muted}
-                      strokeWidth="2"
-                      opacity="0.3"
-                    />
-                    <circle
-                      cx="285"
-                      cy="150"
-                      r="18"
-                      stroke={t.muted}
-                      strokeWidth="2"
-                      opacity="0.3"
-                    />
-                    <path
-                      d="M 40 150 L 70 150 A 25 25 0 0 1 120 150 L 260 150 A 25 25 0 0 1 310 150 L 350 150 L 360 130 L 320 100 L 250 70 L 170 70 L 90 110 L 40 130 Z"
-                      stroke={t.cyan}
-                      strokeWidth="3.5"
-                      className="draw-path"
-                      style={{ filter: `drop-shadow(0 0 8px ${t.cyan})` }}
-                    />
-                    <circle
-                      cx="95"
-                      cy="150"
-                      r="18"
-                      stroke={t.cyan}
-                      strokeWidth="3"
-                      className="draw-path"
-                      style={{ filter: `drop-shadow(0 0 6px ${t.cyan})` }}
-                    />
-                    <circle
-                      cx="285"
-                      cy="150"
-                      r="18"
-                      stroke={t.cyan}
-                      strokeWidth="3"
-                      className="draw-path"
-                      style={{ filter: `drop-shadow(0 0 6px ${t.cyan})` }}
-                    />
-                    <line
-                      x1="80"
-                      y1="40"
-                      x2="80"
-                      y2="180"
-                      stroke={t.cyan}
-                      strokeWidth="2"
-                      className="laser-scan"
-                      style={{ filter: `drop-shadow(0 0 12px ${t.cyan})` }}
-                    />
-                  </svg>
-                </div>
+                {/* Overlays for depth and text legibility */}
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/70 via-transparent to-transparent h-24" />
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#0B0D14] via-black/40 to-transparent top-auto h-32" />
 
-                <div
-                  className="px-6 py-4 flex justify-between items-end border-t"
-                  style={{ borderColor: `${t.border}80` }}
-                >
-                  <div>
-                    <div
-                      className="text-[10px] font-bold tracking-widest uppercase mb-1"
-                      style={{ color: t.txt }}
-                    >
-                      Status: Active
-                    </div>
-                    <div
-                      className="text-[10px] tracking-widest uppercase"
-                      style={{ color: t.muted }}
-                    >
-                      Mode: Precision Wrapping
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div
-                      className="text-xl font-black leading-none mb-1"
+                {/* Top HUD Area */}
+                <div className="absolute top-0 left-0 right-0 p-5 flex justify-between items-center z-20">
+                  <span className="text-[9px] font-extrabold tracking-[3px] uppercase text-white/50">
+                    TS · STUDIO PREVIEW
+                  </span>
+                  <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span
+                      className="w-1.5 h-1.5 rounded-full fast-pulse"
                       style={{
-                        color: t.cyan,
-                        fontFamily: "'Outfit',sans-serif",
+                        background: "#0f86c6",
+                        boxShadow: `0 0 6px #0f86c6`,
+                      }}
+                    />
+                    <span
+                      className="text-[9px] font-extrabold tracking-[3px] uppercase"
+                      style={{ color: "#0f86c6" }}
+                    >
+                      LIVE PREVIEW
+                    </span>
+                  </div>
+                </div>
+
+                {/* Bottom Controls HUD */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 pb-6 flex justify-between items-end z-20">
+                  <div className="flex gap-5">
+                    <button
+                      onClick={() => switchVideo(0)}
+                      className="text-[11px] font-extrabold tracking-[1.5px] uppercase transition-colors pb-1"
+                      style={{
+                        color:
+                          activeVideo === 0 ? "#fff" : "rgba(255,255,255,0.4)",
+                        borderBottom:
+                          activeVideo === 0
+                            ? `2px solid #0f86c6`
+                            : "2px solid transparent",
                       }}
                     >
-                      99%
-                    </div>
-                    <div
-                      className="w-16 h-1 rounded overflow-hidden"
-                      style={{ background: t.bgC }}
+                      Vehicle Styling
+                    </button>
+                    <button
+                      onClick={() => switchVideo(1)}
+                      className="text-[11px] font-extrabold tracking-[1.5px] uppercase transition-colors pb-1"
+                      style={{
+                        color:
+                          activeVideo === 1 ? "#fff" : "rgba(255,255,255,0.4)",
+                        borderBottom:
+                          activeVideo === 1
+                            ? `2px solid #0f86c6`
+                            : "2px solid transparent",
+                      }}
                     >
-                      <div
-                        className="h-full w-[99%] animate-pulse"
-                        style={{ background: t.cyan }}
-                      />
-                    </div>
+                      Our Workshop
+                    </button>
                   </div>
+
+                  <button
+                    onClick={() => setIsMuted(!isMuted)}
+                    className="transition-colors"
+                    style={{
+                      color: isMuted ? "rgba(255,255,255,0.4)" : "#0f86c6",
+                    }}
+                  >
+                    {isMuted ? (
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <line x1="23" y1="9" x2="17" y2="15"></line>
+                        <line x1="17" y1="9" x2="23" y2="15"></line>
+                      </svg>
+                    ) : (
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                      </svg>
+                    )}
+                  </button>
+                </div>
+
+                {/* Progress Line */}
+                <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10 z-30">
+                  <div
+                    className="h-full transition-all duration-100 ease-linear"
+                    style={{
+                      width: `${videoProgress}%`,
+                      background: "#0f86c6",
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -1037,7 +1050,7 @@ export default function App() {
               { v: `${stats[0]}+`, l: "Years of Excellence" },
               { v: `${stats[1].toLocaleString()}+`, l: "Projects Completed" },
               { v: `${stats[2]}+`, l: "Service Types" },
-              { v: `#${stats[3]}`, l: "In Horana, Sri Lanka" },
+              { v: `#${stats[3]}`, l: "In Kalutara District, Sri Lanka" },
             ].map((s, i) => (
               <div
                 key={s.l}
@@ -1105,7 +1118,7 @@ export default function App() {
                 color: t.cyan,
                 border: `1px solid transparent`,
                 borderLeft: `3px solid ${t.cyan}`,
-                boxShadow: `-3px 0 15px ${t.cyan}40`,
+                boxShadow: `-3px 0 15px rgba(15,134,198,0.4)`,
               }}
             >
               Our Legacy
@@ -1123,7 +1136,9 @@ export default function App() {
               <span
                 style={{
                   color: t.cyan,
-                  textShadow: t.isDark ? `0 0 15px ${t.cyan}80` : "none",
+                  textShadow: t.isDark
+                    ? `0 0 15px rgba(15,134,198,0.8)`
+                    : "none",
                 }}
               >
                 1996
@@ -1135,7 +1150,7 @@ export default function App() {
                 <div
                   className="w-[2px] h-full absolute left-[11px] top-4 rounded-full"
                   style={{
-                    background: `linear-gradient(to bottom, ${t.cyan}80, ${t.blue}80, ${t.purple}80, transparent)`,
+                    background: `linear-gradient(to bottom, rgba(15,134,198,0.8), rgba(30,127,216,0.8), rgba(139,107,177,0.8), transparent)`,
                   }}
                 />
 
@@ -1180,7 +1195,7 @@ export default function App() {
                   style={{ color: t.muted }}
                 >
                   <strong style={{ color: t.txt, fontWeight: 700 }}>
-                    2010 —
+                    2023 —
                   </strong>{" "}
                   As trends evolved, we expanded our horizons, introducing
                   advanced LED signage, precise CNC routing, and
@@ -1476,9 +1491,11 @@ export default function App() {
                     className="px-5 py-2.5 text-[11px] font-extrabold tracking-[1.5px] uppercase rounded-full transition-all duration-300"
                     style={{
                       background: isActive ? t.cyan : t.bgC,
-                      color: isActive ? "#0B0D14" : t.muted,
+                      color: isActive ? "#ffffff" : t.muted,
                       border: `1px solid ${isActive ? t.cyan : t.border}`,
-                      boxShadow: isActive ? `0 0 20px ${t.cyan}50` : "none",
+                      boxShadow: isActive
+                        ? "0 0 20px rgba(15,134,198,0.4)"
+                        : "none",
                     }}
                   >
                     {cat}
@@ -1581,7 +1598,7 @@ export default function App() {
       <section
         className="reveal py-20 px-[5%] relative overflow-hidden"
         style={{
-          background: `linear-gradient(135deg,${t.blue} 0%,${t.cyan} 100%)`,
+          background: `linear-gradient(135deg, #0f86c6 0%, #1E7FD8 100%)`,
         }}
       >
         <div
@@ -1641,7 +1658,7 @@ export default function App() {
               <InfoRow
                 t={t}
                 label="Address"
-                value="No: 270/13G, Royal Garden, Horana, Sri Lanka"
+                value="No: 270/13G, Royal Garden, Horana, Sri Lanka 🇱🇰"
                 svgPath={
                   <>
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
@@ -1850,7 +1867,7 @@ export default function App() {
                       Vehicle Protection &amp; Styling
                     </option>
                     <option style={{ background: t.bgC }}>
-                      Light Boards &amp; Signage
+                      Light Boards With Animations
                     </option>
                     <option style={{ background: t.bgC }}>
                       Advertising &amp; Branding
@@ -1878,7 +1895,7 @@ export default function App() {
                     className="pbtn w-full text-[13px] py-4"
                     style={{
                       background: t.cyan,
-                      color: t.isDark ? "#0B0D14" : "#fff",
+                      color: "#fff",
                       opacity: form.loading ? 0.7 : 1,
                     }}
                     onClick={send}
@@ -1912,7 +1929,7 @@ export default function App() {
             </div>
           </div>
           <div className="text-[11.5px]" style={{ color: t.faint }}>
-            © 2024 Thilina Stickers. All rights reserved.
+            © 2025 Thilina Stickers, Horana.
           </div>
           <div className="flex flex-wrap gap-5">
             {NAV.map((n) => (
