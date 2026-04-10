@@ -399,7 +399,7 @@ export default function App() {
     setForm((p) => ({ ...p, loading: true }));
 
     try {
-      const response = await fetch("https://formspree.io/f/YOUR_ID", {
+      const response = await fetch("https://formspree.io/f/xreowynp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
