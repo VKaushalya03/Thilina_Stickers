@@ -1461,14 +1461,17 @@ export default function App() {
           style={{ transform: `translateY(${galleryParallax}px)`, zIndex: 0 }}
         >
           <h2
-            className="font-black whitespace-nowrap"
+            className="font-black"
             style={{
               fontSize: "25vw",
               color: t.txt,
               fontFamily: "'Outfit', sans-serif",
+              lineHeight: "0.9",
             }}
           >
-            OUR WORK
+            OUR
+            <br />
+            WORK
           </h2>
         </div>
 
