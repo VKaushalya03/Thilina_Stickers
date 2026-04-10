@@ -1566,7 +1566,8 @@ export default function App() {
               href="https://www.instagram.com/thilinastickers/"
               target="_blank"
               rel="noreferrer"
-              className="btn-ig inline-flex items-center gap-3 text-[12px] text-white"
+              className="btn-ig inline-flex items-center gap-3 text-[12px]"
+              style={{ color: t.isDark ? "#fff" : t.txt }}
             >
               <svg
                 width="18"
