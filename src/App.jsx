@@ -69,7 +69,7 @@ const SERVICES = [
     sub: "PPF · Ceramic Tint · Vinyl Wraps · Graphics",
     desc: "Self-healing Paint Protection Film (PPF), Nano-Ceramic & Carbon window tinting optimised for Sri Lanka's tropical climate, full or partial vinyl wraps and custom racing graphics.",
     tags: ["PPF Film", "Ceramic Tint", "Vinyl Wraps", "Custom Graphics"],
-    img: servicePpf, // Local image
+    img: servicePpf,
   },
   {
     key: "led",
@@ -78,7 +78,7 @@ const SERVICES = [
     sub: "Neon Flex · 3D LED · Programmable Displays",
     desc: "Neon Flex signs for cafés and showrooms, premium 3D illuminated channel lettering, slim custom light boxes and programmable LED boards with T8000 controller animations.",
     tags: ["Neon Flex", "3D LED Letters", "Light Boxes", "LED Displays"],
-    img: serviceLed, // Local image
+    img: serviceLed,
   },
   {
     key: "brand",
@@ -87,7 +87,7 @@ const SERVICES = [
     sub: "Number Plates · Fleet Wraps · Corporate",
     desc: "Sri Lanka's best-selling custom number plates, corporate office wall graphics, frosted glass films, promotional banners and commercial vehicle fleet branding.",
     tags: ["Number Plates", "Fleet Branding", "Wall Graphics", "Banners"],
-    img: serviceBrand, // Local image
+    img: serviceBrand,
   },
   {
     key: "cnc",
@@ -96,7 +96,7 @@ const SERVICES = [
     sub: "Laser · CNC · 3D Printing · UV Print",
     desc: "Precision laser and CNC cutting for acrylic, wood and metal. Custom 3D-printed parts and prototypes. UV direct-to-material printing for weather-resistant, long-lasting output.",
     tags: ["Laser Cutting", "CNC Routing", "3D Printing", "UV Printing"],
-    img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=720&q=80", // Kept original
+    img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=720&q=80",
   },
 ];
 
@@ -105,49 +105,49 @@ const GALLERY = [
     id: 1,
     cat: "Vehicles",
     label: "PPF Protection",
-    img: "https://images.unsplash.com/photo-1616422285623-13ff0162193c?w=520&q=80", // Kept original
+    img: "https://images.unsplash.com/photo-1616422285623-13ff0162193c?w=520&q=80",
   },
   {
     id: 2,
     cat: "Signs",
     label: "LED Channel Sign",
-    img: gallery2, // Local image
+    img: gallery2,
   },
   {
     id: 3,
     cat: "CNC",
     label: "CNC Precision Cut",
-    img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=520&q=80", // Kept original
+    img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=520&q=80",
   },
   {
     id: 4,
     cat: "Vehicles",
     label: "Full Vinyl Wrap",
-    img: gallery4, // Local image
+    img: gallery4,
   },
   {
     id: 5,
     cat: "Signs",
     label: "Neon Flex Sign",
-    img: "https://images.unsplash.com/photo-1570514865285-2de0d16e3efc?w=520&q=80", // Kept original
+    img: "https://images.unsplash.com/photo-1570514865285-2de0d16e3efc?w=520&q=80",
   },
   {
     id: 6,
     cat: "Vehicles",
     label: "Fleet Branding",
-    img: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=520&q=80", // Kept original
+    img: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=520&q=80",
   },
   {
     id: 7,
     cat: "CNC",
     label: "UV Print Output",
-    img: gallery7, // Local image
+    img: gallery7,
   },
   {
     id: 8,
     cat: "Signs",
     label: "3D LED Lettering",
-    img: gallery8, // Local image
+    img: gallery8,
   },
 ];
 
@@ -290,6 +290,7 @@ export default function App() {
   const [mode, setMode] = useState("dark");
   const [scrolled, setScrolled] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [galleryParallax, setGalleryParallax] = useState(0);
   const [menu, setMenu] = useState(false);
   const [galCat, setGalCat] = useState("All");
   const [shown, setShown] = useState(false);
@@ -310,6 +311,87 @@ export default function App() {
   });
 
   const t = T[mode];
+
+  // ==========================================
+  // SEO Meta Tags & JSON-LD Injection
+  // ==========================================
+  useEffect(() => {
+    document.title =
+      "Thilina Stickers | Vehicle Wraps, PPF, LED Signs & CNC Fabrication in Horana, Sri Lanka";
+
+    const metaTags = {
+      description:
+        "Sri Lanka's premier vehicle modification and signage studio since 1996. PPF film, vinyl wraps, ceramic tint, neon flex signs, 3D LED lettering, CNC cutting and UV printing in Horana.",
+      keywords:
+        "vehicle wraps Sri Lanka, PPF film Horana, vinyl wrap Sri Lanka, LED signs Sri Lanka, neon sign Sri Lanka, CNC cutting Horana, number plates Sri Lanka, Thilina Stickers, ceramic tint Sri Lanka, 3D LED letters",
+      "og:title":
+        "Thilina Stickers — Horana's Premier Vehicle & Signage Studio",
+      "og:description":
+        "Custom PPF, vinyl wraps, neon signs, CNC fabrication and more. Serving Sri Lanka since 1996.",
+      "og:type": "website",
+      "og:url": "https://www.thilinastickers.lk",
+      robots: "index, follow",
+      "geo.region": "LK-1",
+      "geo.placename": "Horana, Western Province, Sri Lanka",
+    };
+
+    Object.entries(metaTags).forEach(([name, content]) => {
+      let tag =
+        document.querySelector(`meta[name="${name}"]`) ||
+        document.querySelector(`meta[property="${name}"]`);
+      if (!tag) {
+        tag = document.createElement("meta");
+        if (name.startsWith("og:")) tag.setAttribute("property", name);
+        else tag.setAttribute("name", name);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute("content", content);
+    });
+
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", "https://www.thilinastickers.lk");
+
+    let jsonLdScript = document.querySelector("#json-ld");
+    if (!jsonLdScript) {
+      jsonLdScript = document.createElement("script");
+      jsonLdScript.id = "json-ld";
+      jsonLdScript.type = "application/ld+json";
+      document.head.appendChild(jsonLdScript);
+    }
+    jsonLdScript.innerHTML = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      name: "Thilina Stickers",
+      image: "https://www.thilinastickers.lk/og-image.jpg",
+      url: "https://www.thilinastickers.lk",
+      telephone: ["+94342265114", "+94778618584"],
+      email: "thilinastickers@live.com",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "No: 270/13G, Royal Garden",
+        addressLocality: "Horana",
+        addressRegion: "Western Province",
+        addressCountry: "LK",
+      },
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: 6.7153,
+        longitude: 80.0607,
+      },
+      openingHours: "Mo-Sa 08:00-18:00",
+      priceRange: "$$",
+      foundingDate: "1996",
+      sameAs: [
+        "https://www.facebook.com/thilinastickers/",
+        "https://www.instagram.com/thilinastickers/",
+      ],
+    });
+  }, []);
 
   const animateStats = useCallback(() => {
     const targets = [28, 5000, 15, 1];
@@ -332,6 +414,15 @@ export default function App() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 55);
       setScrollY(window.scrollY);
+
+      // Gallery Parallax calculation
+      const galEl = document.getElementById("gallery");
+      if (galEl) {
+        const rect = galEl.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          setGalleryParallax((window.innerHeight - rect.top) * 0.3);
+        }
+      }
     };
 
     const handleMouseMove = (e) => {
@@ -440,7 +531,6 @@ export default function App() {
       }}
       className="min-h-screen w-full overflow-x-hidden transition-colors duration-300 relative flex flex-col"
     >
-      {/* Dynamic Global Styles & Animations */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -459,14 +549,6 @@ export default function App() {
         .scard:hover { transform: translateY(-8px); }
         .scard .card-img { transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         .scard:hover .card-img { transform: scale(1.08); }
-        
-        .gcrd { position: relative; overflow: hidden; border-radius: 8px; cursor: pointer; }
-        .gcrd img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s; }
-        .gcrd:hover img { transform: scale(1.07); }
-        .gov { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,13,20,.9) 0%, transparent 55%); opacity: 0; transition: opacity .3s; }
-        .gcrd:hover .gov { opacity: 1; }
-        .gcap { position: absolute; bottom: 12px; left: 14px; right: 14px; opacity: 0; transition: opacity .3s; }
-        .gcrd:hover .gcap { opacity: 1; }
         
         .wafloat { position: fixed; bottom: 26px; right: 26px; z-index: 300; width: 52px; height: 52px; border-radius: 50%; background: #25D366; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 26px rgba(37,211,102,.44); text-decoration: none; transition: transform .2s; }
         .wafloat:hover { transform: scale(1.1); }
@@ -492,13 +574,39 @@ export default function App() {
         .laser-scan { animation: laser-sweep 4s ease-in-out infinite; }
         @keyframes laser-sweep { 0%, 100% { transform: translateX(0); opacity: 0; } 15%, 85% { opacity: 1; } 50% { transform: translateX(250px); } }
 
+        /* ABOUT & GALLERY REDESIGN CSS */
+        .bg-blueprint-dark { background-color: #0D1020; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 24px 24px; }
+        .bg-blueprint-light { background-color: #F0F4FF; background-image: linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px); background-size: 24px 24px; }
+        
+        .feature-row { transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); cursor: default; }
+        .feature-row:hover { transform: translateX(6px); }
+
+        .masonry-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 240px; gap: 16px; }
+        .masonry-grid > :nth-child(1) { grid-column: span 2; grid-row: span 2; }
+        .masonry-grid > :nth-child(2) { grid-column: span 1; grid-row: span 1; }
+        .masonry-grid > :nth-child(3) { grid-column: span 1; grid-row: span 1; }
+        .masonry-grid > :nth-child(4) { grid-column: span 2; grid-row: span 1; }
+        .masonry-grid > :nth-child(5) { grid-column: span 1; grid-row: span 2; }
+        .masonry-grid > :nth-child(6) { grid-column: span 1; grid-row: span 1; }
+        .masonry-grid > :nth-child(7) { grid-column: span 2; grid-row: span 1; }
+        .masonry-grid > :nth-child(8) { grid-column: span 1; grid-row: span 1; }
+
+        .btn-ig { position: relative; padding: 14px 34px; border-radius: 40px; text-transform: uppercase; font-weight: 800; letter-spacing: 1.5px; z-index: 1; transition: transform 0.2s; font-family: 'Outfit', sans-serif; font-size: 12px; }
+        .btn-ig::before { content: ''; position: absolute; inset: -2px; border-radius: 40px; background: linear-gradient(45deg, #8B6BB1, #F58529, #FEDA77); z-index: -1; transition: filter 0.3s; }
+        .btn-ig:hover::before { filter: blur(8px); }
+        .btn-ig:hover { transform: translateY(-2px); }
+        .btn-ig::after { content: ''; position: absolute; inset: 0; background: ${t.bgC}; border-radius: 40px; z-index: -1; transition: background 0.3s; }
+
         @media (prefers-reduced-motion: reduce) {
           .animate-marquee, .scan-line, .float-card, .draw-path, .laser-scan { animation: none; }
           .reveal { transition: none; opacity: 1; transform: none; }
+          .feature-row:hover { transform: none; }
         }
-        @media (max-width: 760px) {
+        @media (max-width: 768px) {
           .dnav { display: none !important; }
           .mtoggle { display: flex !important; }
+          .masonry-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; grid-auto-rows: auto; }
+          .masonry-grid > * { grid-column: span 1 !important; grid-row: span 1 !important; aspect-ratio: 1; }
         }
         @media (max-width: 480px) {
            .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
@@ -650,7 +758,6 @@ export default function App() {
         id="home"
         className="relative flex flex-col justify-center min-h-screen px-[5%] overflow-hidden pt-24 pb-16"
       >
-        {/* Environment Textures & Lighting */}
         <div className="absolute inset-0 bg-noise mix-blend-overlay z-10" />
         <div className="scan-line" />
 
@@ -678,10 +785,8 @@ export default function App() {
           />
         </div>
 
-        {/* Hero Content Grid */}
         <div className="max-w-[1300px] mx-auto w-full relative z-20 flex flex-col flex-grow justify-center mt-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8 items-center w-full">
-            {/* Left Content */}
             <div className="max-w-[600px] pt-4 md:pt-0">
               <div
                 className="inline-flex items-center gap-2 px-4 py-1.5 rounded text-[10px] font-extrabold tracking-[2.5px] uppercase mb-7 border"
@@ -767,7 +872,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Right Content: Option A Animated SVG Showcase */}
             <div
               className={`hwi${shown ? " in" : ""} w-full flex justify-center md:justify-end`}
               style={{ transitionDelay: ".55s" }}
@@ -782,7 +886,6 @@ export default function App() {
                   boxShadow: `0 10px 50px rgba(0,212,232,${t.isDark ? "0.12" : "0.06"})`,
                 }}
               >
-                {/* Tech Dashboard Top Bar */}
                 <div
                   className="px-5 py-3 border-b flex justify-between items-center"
                   style={{
@@ -814,14 +917,12 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Animated SVG Canvas */}
                 <div className="p-8 pb-4 relative">
                   <svg
                     viewBox="0 0 400 200"
                     className="w-full h-auto drop-shadow-lg"
                     fill="none"
                   >
-                    {/* Background Grid */}
                     <path
                       d="M 0 50 L 400 50 M 0 100 L 400 100 M 0 150 L 400 150"
                       stroke={t.muted}
@@ -834,8 +935,6 @@ export default function App() {
                       strokeWidth="1"
                       opacity="0.1"
                     />
-
-                    {/* Faint base vehicle outline */}
                     <path
                       d="M 40 150 L 70 150 A 25 25 0 0 1 120 150 L 260 150 A 25 25 0 0 1 310 150 L 350 150 L 360 130 L 320 100 L 250 70 L 170 70 L 90 110 L 40 130 Z"
                       stroke={t.muted}
@@ -858,8 +957,6 @@ export default function App() {
                       strokeWidth="2"
                       opacity="0.3"
                     />
-
-                    {/* Animated drawing car path (PPF/Laser trace effect) */}
                     <path
                       d="M 40 150 L 70 150 A 25 25 0 0 1 120 150 L 260 150 A 25 25 0 0 1 310 150 L 350 150 L 360 130 L 320 100 L 250 70 L 170 70 L 90 110 L 40 130 Z"
                       stroke={t.cyan}
@@ -885,8 +982,6 @@ export default function App() {
                       className="draw-path"
                       style={{ filter: `drop-shadow(0 0 6px ${t.cyan})` }}
                     />
-
-                    {/* Scanning Laser Beam */}
                     <line
                       x1="80"
                       y1="40"
@@ -900,7 +995,6 @@ export default function App() {
                   </svg>
                 </div>
 
-                {/* Dashboard Footer */}
                 <div
                   className="px-6 py-4 flex justify-between items-end border-t"
                   style={{ borderColor: `${t.border}80` }}
@@ -944,7 +1038,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* Stats Bar */}
           <div
             id="stats-container"
             className="reveal mt-12 md:mt-20 w-full grid grid-cols-2 md:grid-cols-4 border rounded-xl overflow-hidden backdrop-blur-md relative z-20 shadow-xl"
@@ -1012,67 +1105,152 @@ export default function App() {
         </div>
       </div>
 
-      {/* ABOUT */}
+      {/* ABOUT - OUR LEGACY (REDESIGNED) */}
       <section
         id="about"
-        className="py-24 px-[5%] border-b"
-        style={{ background: t.bgS, borderColor: t.border }}
+        className={`py-24 px-[5%] border-b relative ${t.isDark ? "bg-blueprint-dark" : "bg-blueprint-light"}`}
+        style={{ borderColor: t.border }}
       >
-        <div className="max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+        <div className="max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center relative z-10">
           <div className="reveal">
-            <Pill t={t}>Our Legacy</Pill>
-            <SectionH2 t={t} first="Trusted Since 1996" accent="cyan" />
-            <p
-              className="text-[14.5px] leading-relaxed mt-5 mb-4"
-              style={{ color: t.muted }}
+            <span
+              className="inline-block px-3 py-1 text-[11px] font-extrabold tracking-widest uppercase rounded mb-4"
+              style={{
+                background: t.cyanDim,
+                color: t.cyan,
+                border: `1px solid transparent`,
+                borderLeft: `3px solid ${t.cyan}`,
+                boxShadow: `-3px 0 15px ${t.cyan}40`,
+              }}
             >
-              For nearly three decades, Thilina Stickers has been the heartbeat
-              of vehicle customisation and creative fabrication in Horana. What
-              started as a small sticker shop has grown into a full-service
-              studio equipped with laser cutters, CNC routers, UV printers and
-              3D printing machines.
-            </p>
-            <p
-              className="text-[14.5px] leading-relaxed mb-8"
-              style={{ color: t.muted }}
+              Our Legacy
+            </span>
+
+            <h2
+              className="font-extrabold uppercase leading-tight tracking-tighter m-0 mb-6"
+              style={{
+                fontFamily: "'Outfit',sans-serif",
+                fontSize: "clamp(30px,4.2vw,52px)",
+                color: t.txt,
+              }}
             >
-              We source the latest materials and machinery from international
-              exhibitions to deliver global-standard craftsmanship in Sri Lanka.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {[
-                "PPF Film",
-                "Vinyl Wraps",
-                "3D LED Signs",
-                "CNC Cutting",
-                "UV Print",
-                "Number Plates",
-                "Neon Flex",
-                "Ceramic Tint",
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1.5 text-[11px] border rounded"
+              TRUSTED SINCE{" "}
+              <span
+                style={{
+                  color: t.cyan,
+                  textShadow: t.isDark ? `0 0 15px ${t.cyan}80` : "none",
+                }}
+              >
+                1996
+              </span>
+            </h2>
+
+            <div className="flex">
+              <div className="hidden sm:flex flex-col relative w-6 mr-6 shrink-0 pt-2 items-center">
+                <div
+                  className="w-[2px] h-full absolute left-[11px] top-4 rounded-full"
                   style={{
-                    background: t.bgC,
-                    borderColor: t.border,
-                    color: t.muted,
+                    background: `linear-gradient(to bottom, ${t.cyan}80, ${t.blue}80, ${t.purple}80, transparent)`,
                   }}
+                />
+
+                <div
+                  className="relative z-10 w-3 h-3 rounded-full animate-pulse mb-[75px]"
+                  style={{
+                    background: t.cyan,
+                    boxShadow: `0 0 10px ${t.cyan}`,
+                  }}
+                />
+                <div
+                  className="relative z-10 w-3 h-3 rounded-full animate-pulse mb-[75px]"
+                  style={{
+                    background: t.blue,
+                    boxShadow: `0 0 10px ${t.blue}`,
+                  }}
+                />
+                <div
+                  className="relative z-10 w-3 h-3 rounded-full animate-pulse"
+                  style={{
+                    background: t.purple,
+                    boxShadow: `0 0 10px ${t.purple}`,
+                  }}
+                />
+              </div>
+
+              <div>
+                <p
+                  className="text-[14.5px] leading-relaxed mb-6"
+                  style={{ color: t.muted }}
                 >
-                  {tag}
-                </span>
-              ))}
+                  <strong style={{ color: t.txt, fontWeight: 700 }}>
+                    1996 —
+                  </strong>{" "}
+                  For nearly three decades, Thilina Stickers has been the
+                  heartbeat of vehicle customisation and creative fabrication in
+                  Horana. What started as a small sticker shop has grown into a
+                  full-service studio.
+                </p>
+                <p
+                  className="text-[14.5px] leading-relaxed mb-6"
+                  style={{ color: t.muted }}
+                >
+                  <strong style={{ color: t.txt, fontWeight: 700 }}>
+                    2010 —
+                  </strong>{" "}
+                  As trends evolved, we expanded our horizons, introducing
+                  advanced LED signage, precise CNC routing, and
+                  industrial-grade fabrication to our local market.
+                </p>
+                <p
+                  className="text-[14.5px] leading-relaxed"
+                  style={{ color: t.muted }}
+                >
+                  <strong style={{ color: t.txt, fontWeight: 700 }}>
+                    2024 —
+                  </strong>{" "}
+                  Today, we source the latest machinery from international
+                  exhibitions, offering global-standard craftsmanship including
+                  UV flatbed printing and 3D prototyping right here in Sri
+                  Lanka.
+                </p>
+              </div>
+            </div>
+
+            <div
+              className="mt-8 pt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-bold tracking-wide border-t"
+              style={{ borderColor: t.borderM, color: t.muted }}
+            >
+              <span>
+                <span style={{ color: t.cyan, fontSize: "14px" }}>500+</span>{" "}
+                Vehicles Wrapped
+              </span>
+              <span className="opacity-40 hidden sm:inline">·</span>
+              <span>
+                <span style={{ color: t.cyan, fontSize: "14px" }}>1,000+</span>{" "}
+                Signs Built
+              </span>
+              <span className="opacity-40 hidden md:inline">·</span>
+              <span>
+                <span style={{ color: t.cyan, fontSize: "14px" }}>200+</span>{" "}
+                CNC Projects
+              </span>
+              <span className="opacity-40 hidden sm:inline">·</span>
+              <span>
+                <span style={{ color: t.cyan, fontSize: "14px" }}>15+</span>{" "}
+                Service Types
+              </span>
             </div>
           </div>
 
           <div
-            className="reveal grid grid-cols-1 sm:grid-cols-2 gap-3"
+            className="reveal flex flex-col gap-4"
             style={{ transitionDelay: "0.2s" }}
           >
             {[
               {
                 title: "28 Years Track Record",
                 sub: "Consistent excellence since 1996",
+                color: t.cyan,
                 path: (
                   <>
                     <path d="M9 11l3 3L22 4" />
@@ -1083,11 +1261,13 @@ export default function App() {
               {
                 title: "Premium Materials",
                 sub: "International-grade supplies",
+                color: t.blue,
                 path: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
               },
               {
                 title: "Advanced Machinery",
                 sub: "Laser, CNC, 3D & UV tech",
+                color: t.purple,
                 path: (
                   <>
                     <rect x="2" y="3" width="20" height="14" rx="2" />
@@ -1099,6 +1279,7 @@ export default function App() {
               {
                 title: "Expert Team",
                 sub: "Skilled & passionate craftsmen",
+                color: t.cyan,
                 path: (
                   <>
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -1110,25 +1291,34 @@ export default function App() {
             ].map((c) => (
               <div
                 key={c.title}
-                className="p-5 border rounded-lg transition-colors duration-300"
-                style={{ background: t.bgC, borderColor: t.border }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.borderColor = t.cyan + "50")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.borderColor = t.border)
-                }
+                className="feature-row flex items-center gap-5 p-5 rounded-r-xl border"
+                style={{
+                  background: t.bgC,
+                  borderColor: t.border,
+                  borderLeft: `4px solid ${c.color}`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = `inset 40px 0 60px -40px ${c.color}40, 0 8px 24px ${t.sh}`;
+                  e.currentTarget.style.borderColor = `${c.color}60`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = `none`;
+                  e.currentTarget.style.borderColor = t.border;
+                }}
               >
                 <div
-                  className="w-10 h-10 rounded mb-3 flex items-center justify-center"
-                  style={{ background: t.cyanDim }}
+                  className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0"
+                  style={{
+                    background: `${c.color}15`,
+                    boxShadow: `0 0 20px ${c.color}20`,
+                  }}
                 >
                   <svg
-                    width="18"
-                    height="18"
+                    width="22"
+                    height="22"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke={t.cyan}
+                    stroke={c.color}
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -1136,18 +1326,24 @@ export default function App() {
                     {c.path}
                   </svg>
                 </div>
-                <div
-                  className="font-bold text-[13.5px] mb-1"
-                  style={{ color: t.txt }}
-                >
-                  {c.title}
+                <div className="flex-grow">
+                  <div
+                    className="font-bold text-[14.5px] mb-1"
+                    style={{ color: t.txt }}
+                  >
+                    {c.title}
+                  </div>
+                  <div
+                    className="text-[12.5px] leading-snug"
+                    style={{ color: t.muted }}
+                  >
+                    {c.sub}
+                  </div>
                 </div>
                 <div
-                  className="text-[12px] leading-snug"
-                  style={{ color: t.muted }}
-                >
-                  {c.sub}
-                </div>
+                  className="w-1 h-8 rounded-full opacity-40 shrink-0"
+                  style={{ background: c.color }}
+                />
               </div>
             ))}
           </div>
@@ -1255,67 +1451,139 @@ export default function App() {
         </div>
       </section>
 
-      {/* GALLERY */}
+      {/* GALLERY - OUR WORK (REDESIGNED) */}
       <section
         id="gallery"
-        className="py-24 px-[5%] border-t"
-        style={{ background: t.bgS, borderColor: t.border }}
+        className={`py-24 px-[5%] relative overflow-hidden ${t.isDark ? "bg-blueprint-dark" : "bg-blueprint-light"}`}
       >
-        <div className="max-w-[1300px] mx-auto">
-          <div className="reveal flex flex-wrap items-end justify-between gap-6 mb-10">
+        <div
+          className="absolute top-0 left-0 right-0 pointer-events-none flex justify-center opacity-5 select-none"
+          style={{ transform: `translateY(${galleryParallax}px)`, zIndex: 0 }}
+        >
+          <h2
+            className="font-black whitespace-nowrap"
+            style={{
+              fontSize: "25vw",
+              color: t.txt,
+              fontFamily: "'Outfit', sans-serif",
+            }}
+          >
+            OUR WORK
+          </h2>
+        </div>
+
+        <div className="max-w-[1300px] mx-auto relative z-10">
+          <div className="reveal flex flex-wrap items-end justify-between gap-8 mb-12">
             <div>
               <Pill t={t}>Portfolio</Pill>
               <SectionH2 t={t} first="Our Work" accent="cyan" />
             </div>
-            <div className="flex gap-2 flex-wrap">
-              {["All", "Vehicles", "Signs", "CNC"].map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setGalCat(cat)}
-                  className="px-4 py-2 text-[11px] font-extrabold tracking-widest uppercase rounded transition-all"
-                  style={{
-                    background: galCat === cat ? t.cyan : "transparent",
-                    color:
-                      galCat === cat
-                        ? t.isDark
-                          ? "#0B0D14"
-                          : "#fff"
-                        : t.muted,
-                    border: `1px solid ${galCat === cat ? t.cyan : t.border}`,
-                  }}
-                >
-                  {cat}
-                </button>
-              ))}
+            <div className="flex gap-3 flex-wrap">
+              {["All", "Vehicles", "Signs", "CNC"].map((cat) => {
+                const isActive = galCat === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setGalCat(cat)}
+                    className="px-5 py-2.5 text-[11px] font-extrabold tracking-[1.5px] uppercase rounded-full transition-all duration-300"
+                    style={{
+                      background: isActive ? t.cyan : t.bgC,
+                      color: isActive ? "#0B0D14" : t.muted,
+                      border: `1px solid ${isActive ? t.cyan : t.border}`,
+                      boxShadow: isActive ? `0 0 20px ${t.cyan}50` : "none",
+                    }}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-2">
-            {gals.map((g) => (
-              <div
-                key={`${galCat}-${g.id}`}
-                className="gcrd aspect-square"
-                style={{
-                  background: t.bgC,
-                  opacity: 1,
-                  transform: "translateY(0)",
-                }}
-              >
-                <img src={g.img} alt={g.label} loading="lazy" />
-                <div className="gov" />
-                <div className="gcap">
-                  <div className="text-[12.5px] font-bold text-white tracking-wide">
-                    {g.label}
-                  </div>
+          <div className="masonry-grid w-full">
+            {gals.map((g, idx) => {
+              const getCatColor = (c) => {
+                if (c === "Vehicles") return t.blue;
+                if (c === "Signs") return t.purple;
+                if (c === "CNC") return t.cyan;
+                return t.cyan;
+              };
+              const badgeColor = getCatColor(g.cat);
+
+              return (
+                <div
+                  key={`${galCat}-${g.id}`}
+                  className="gcrd group relative bg-cover bg-center overflow-hidden rounded-xl shadow-lg reveal"
+                  style={{
+                    background: t.bgC,
+                    transitionDelay: `${(idx % 6) * 0.1}s`,
+                  }}
+                >
+                  <img
+                    src={g.img}
+                    alt={g.label}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
+                  />
+
                   <div
-                    className="text-[10px] tracking-[1.5px] uppercase mt-1"
-                    style={{ color: t.cyan }}
+                    className="absolute top-4 left-4 px-3 py-1 text-[9px] font-extrabold tracking-[2px] uppercase rounded backdrop-blur-md z-20 transition-transform duration-300 group-hover:-translate-y-1"
+                    style={{
+                      background: `${badgeColor}C0`,
+                      color: "#fff",
+                      border: `1px solid ${badgeColor}`,
+                    }}
                   >
                     {g.cat}
                   </div>
+
+                  <div
+                    className="absolute inset-0 opacity-0 transition-opacity duration-500 z-10 group-hover:opacity-100"
+                    style={{
+                      background: `linear-gradient(135deg, transparent 30%, ${t.cyan}40 100%)`,
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D14] via-transparent to-transparent opacity-70 z-10" />
+
+                  <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-6 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 z-20">
+                    <div className="text-[15px] font-bold text-white tracking-wide">
+                      {g.label}
+                    </div>
+                    <div
+                      className="text-[10px] font-extrabold tracking-[2px] uppercase mt-1"
+                      style={{ color: t.cyan }}
+                    >
+                      {g.cat}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+          </div>
+
+          <div className="mt-16 text-center reveal">
+            <a
+              href="https://www.instagram.com/thilinastickers/"
+              target="_blank"
+              rel="noreferrer"
+              className="btn-ig inline-flex items-center gap-3 text-[12px] text-white"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="2" y="2" width="20" height="20" rx="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+              </svg>
+              View More on Instagram
+            </a>
           </div>
         </div>
       </section>
