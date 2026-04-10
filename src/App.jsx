@@ -1898,14 +1898,6 @@ export default function App() {
                   >
                     {form.loading ? "Sending…" : "Send Message"}
                   </button>
-                  <p
-                    className="text-[11px] mt-4 leading-relaxed"
-                    style={{ color: t.faint }}
-                  >
-                    <strong style={{ color: t.muted }}>Note:</strong> Formspree
-                    fetch API is connected. Replace <strong>YOUR_ID</strong> in
-                    the code to receive live emails.
-                  </p>
                 </>
               )}
             </div>
