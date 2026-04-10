@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 
 // --- Local Image Imports ---
+import tsLogo from "./assets/TS_Logo.png";
 import servicePpf from "./assets/service-ppf.jpg";
 import serviceLed from "./assets/service-led.jpg";
 import serviceBrand from "./assets/service-brand.jpg";
@@ -167,29 +168,13 @@ const TICKER_ITEMS = [
 /* ─── SVG Logo ─── */
 function TSMark({ size = 44 }) {
   return (
-    <svg
+    <img
+      src={tsLogo}
+      alt="Thilina Stickers Logo"
       width={size}
       height={size}
-      viewBox="0 0 100 100"
-      fill="none"
-      className="shrink-0"
-    >
-      <rect x="6" y="14" width="66" height="70" rx="15" fill="#1E7FD8" />
-      <polygon points="72,14 92,14 92,34" fill="#8B6BB1" opacity="0.92" />
-      <polygon points="60,14 80,14 80,32" fill="#00D4E8" opacity="0.88" />
-      <text
-        x="38"
-        y="64"
-        textAnchor="middle"
-        fontFamily="'Nunito','Segoe UI',sans-serif"
-        fontWeight="800"
-        fontSize="32"
-        fill="white"
-        letterSpacing="-1"
-      >
-        Ts
-      </text>
-    </svg>
+      className="shrink-0 object-contain"
+    />
   );
 }
 
@@ -630,8 +615,8 @@ export default function App() {
         className="fixed top-0 left-0 h-1 z-[9999] transition-all duration-150 ease-out"
         style={{
           width: `${progressWidth}%`,
-          background: t.cyan,
-          boxShadow: `0 0 10px ${t.cyan}`,
+          background: t.blue,
+          boxShadow: `0 0 10px ${t.blue}`,
         }}
       />
 
@@ -798,7 +783,7 @@ export default function App() {
               >
                 <span
                   className="w-2 h-2 rounded-full animate-pulse"
-                  style={{ background: t.cyan }}
+                  style={{ background: t.blue }}
                 />
                 Established 1996 · Horana, Sri Lanka
               </div>
@@ -826,9 +811,9 @@ export default function App() {
                     transitionDelay: ".18s",
                     fontFamily: "'Outfit',sans-serif",
                     fontSize: "clamp(48px,9vw,110px)",
-                    color: t.cyan,
+                    color: t.blue,
                     textShadow: t.isDark
-                      ? `0 0 60px rgba(0,212,232,0.3)`
+                      ? `0 0 60px rgba(30,127,216,0.3)`
                       : "none",
                   }}
                 >
@@ -864,7 +849,7 @@ export default function App() {
                 </button>
                 <button
                   className="obtn hover:bg-opacity-10"
-                  style={{ borderColor: t.cyan, color: t.cyan }}
+                  style={{ borderColor: t.blue, color: t.blue }}
                   onClick={() => go("gallery")}
                 >
                   View Our Work
