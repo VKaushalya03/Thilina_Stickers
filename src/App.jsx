@@ -1,12 +1,17 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import HeroBackground from "./HeroBackground";
+
 // --- Local Image Imports ---
 import tsLogo from "./assets/TS_Logo.png";
 import servicePpf from "./assets/service-ppf.jpg";
 import serviceLed from "./assets/service-led.jpg";
 import serviceBrand from "./assets/service-brand.jpg";
+import serviceCnc from "./assets/service-cnc.jpeg";
+import gallery1 from "./assets/gallery-1.png";
 import gallery2 from "./assets/gallery-2.jpg";
-import gallery4 from "./assets/gallery-4.jpg";
+import gallery3 from "./assets/gallery-3.jpg";
+import gallery4 from "./assets/gallery-4.JPG";
+import gallery5 from "./assets/gallery-5.JPG";
+import gallery6 from "./assets/gallery-6.jpg";
 import gallery7 from "./assets/gallery-7.jpg";
 import gallery8 from "./assets/gallery-8.jpg";
 
@@ -101,7 +106,7 @@ const SERVICES = [
     sub: "Laser · CNC · 3D Printing · UV Print",
     desc: "Precision laser and CNC cutting for acrylic, wood and metal. Custom 3D-printed parts and prototypes. UV direct-to-material printing for weather-resistant, long-lasting output.",
     tags: ["Laser Cutting", "CNC Routing", "3D Printing", "UV Printing"],
-    img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=720&q=80",
+    img: serviceCnc,
   },
 ];
 
@@ -109,49 +114,49 @@ const GALLERY = [
   {
     id: 1,
     cat: "Vehicles",
-    label: "PPF Protection",
-    img: "https://images.unsplash.com/photo-1616422285623-13ff0162193c?w=520&q=80",
+    label: "Full Vinyl Wrap",
+    img: gallery1,
   },
   {
     id: 2,
     cat: "Signs",
-    label: "LED Channel Sign",
+    label: "Neon Signs",
     img: gallery2,
   },
   {
     id: 3,
     cat: "CNC",
-    label: "CNC Precision Cut",
-    img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=520&q=80",
+    label: "Laser Cutting",
+    img: gallery3,
   },
   {
     id: 4,
     cat: "Vehicles",
-    label: "Full Vinyl Wrap",
+    label: "Motorcycles",
     img: gallery4,
   },
   {
     id: 5,
     cat: "Signs",
-    label: "Neon Flex Sign",
-    img: "https://images.unsplash.com/photo-1570514865285-2de0d16e3efc?w=520&q=80",
+    label: "Light Boards",
+    img: gallery5,
   },
   {
     id: 6,
-    cat: "Vehicles",
-    label: "Fleet Branding",
-    img: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=520&q=80",
+    cat: "CNC",
+    label: "Laser Cutting",
+    img: gallery6,
   },
   {
     id: 7,
-    cat: "CNC",
-    label: "UV Print Output",
+    cat: "Signs",
+    label: "Programmed Light Boards",
     img: gallery7,
   },
   {
     id: 8,
-    cat: "Signs",
-    label: "3D LED Lettering",
+    cat: "Vehicles",
+    label: "Fleet Designing & Printing",
     img: gallery8,
   },
 ];
@@ -390,7 +395,7 @@ export default function App() {
   }, []);
 
   const animateStats = useCallback(() => {
-    const targets = [28, 10000, 15, 1];
+    const targets = [28, 5000, 15, 1];
     const duration = 2000;
     const start = performance.now();
 
@@ -775,8 +780,8 @@ export default function App() {
         id="home"
         className="relative flex flex-col justify-center min-h-screen px-[5%] overflow-hidden pt-24 pb-16"
       >
-        <HeroBackground t={t} />
         <div className="absolute inset-0 bg-noise mix-blend-overlay z-10" />
+        <div className="scan-line" />
 
         <div
           className="absolute inset-0 pointer-events-none z-0"
@@ -802,17 +807,27 @@ export default function App() {
           />
         </div>
 
+        {/* Theme-matching translucent glass overlay over the orbs */}
+        <div
+          className="absolute inset-0 pointer-events-none z-[1]"
+          style={{
+            background: t.isDark
+              ? "rgba(11,13,20,0.65)"
+              : "rgba(242,245,251,0.65)",
+            backdropFilter: "blur(60px)",
+            WebkitBackdropFilter: "blur(60px)",
+          }}
+        />
+
         <div className="max-w-[1300px] mx-auto w-full relative z-20 flex flex-col flex-grow justify-center mt-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-stretch w-full">
             <div className="max-w-[600px] pt-4 md:pt-0 flex flex-col justify-center py-6">
+              {/* Refined Humanized Badge */}
               <div className="flex items-center gap-3 mb-8 self-start">
-                {/* Subtle structural accent line instead of a glowing dot */}
                 <div
                   className="w-[3px] h-[14px] rounded-full"
                   style={{ background: t.cyan }}
-                ></div>
-
-                {/* Clean, readable typography instead of microscopic all-caps */}
+                />
                 <p
                   className="text-[13px] font-medium tracking-[0.5px] m-0"
                   style={{ color: t.muted }}
@@ -1050,7 +1065,7 @@ export default function App() {
               { v: `${stats[0]}+`, l: "Years of Excellence" },
               { v: `${stats[1].toLocaleString()}+`, l: "Projects Completed" },
               { v: `${stats[2]}+`, l: "Service Types" },
-              { v: `#${stats[3]}`, l: "In Kalutara District, Sri Lanka" },
+              { v: `#${stats[3]}`, l: "In Horana, Sri Lanka" },
             ].map((s, i) => (
               <div
                 key={s.l}
@@ -1195,7 +1210,7 @@ export default function App() {
                   style={{ color: t.muted }}
                 >
                   <strong style={{ color: t.txt, fontWeight: 700 }}>
-                    2023 —
+                    2010 —
                   </strong>{" "}
                   As trends evolved, we expanded our horizons, introducing
                   advanced LED signage, precise CNC routing, and
@@ -1867,7 +1882,7 @@ export default function App() {
                       Vehicle Protection &amp; Styling
                     </option>
                     <option style={{ background: t.bgC }}>
-                      Light Boards With Animations
+                      Light Boards &amp; Signage
                     </option>
                     <option style={{ background: t.bgC }}>
                       Advertising &amp; Branding
