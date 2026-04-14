@@ -69,6 +69,7 @@ const T = {
   },
 };
 
+//sasasas
 const NAV = ["Home", "About", "Services", "Gallery", "Contact"];
 
 const SERVICES = [
