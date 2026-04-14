@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-
+import HeroBackground from "./HeroBackground";
 // --- Local Image Imports ---
 import tsLogo from "./assets/TS_Logo.png";
 import servicePpf from "./assets/service-ppf.jpg";
@@ -69,7 +69,6 @@ const T = {
   },
 };
 
-//sasasas
 const NAV = ["Home", "About", "Services", "Gallery", "Contact"];
 
 const SERVICES = [
@@ -396,7 +395,7 @@ export default function App() {
   }, []);
 
   const animateStats = useCallback(() => {
-    const targets = [28, 5000, 15, 1];
+    const targets = [28, 10000, 15, 1];
     const duration = 2000;
     const start = performance.now();
 
@@ -781,8 +780,8 @@ export default function App() {
         id="home"
         className="relative flex flex-col justify-center min-h-screen px-[5%] overflow-hidden pt-24 pb-16"
       >
+        <HeroBackground t={t} />
         <div className="absolute inset-0 bg-noise mix-blend-overlay z-10" />
-        <div className="scan-line" />
 
         <div
           className="absolute inset-0 pointer-events-none z-0"
@@ -808,27 +807,17 @@ export default function App() {
           />
         </div>
 
-        {/* Theme-matching translucent glass overlay over the orbs */}
-        <div
-          className="absolute inset-0 pointer-events-none z-[1]"
-          style={{
-            background: t.isDark
-              ? "rgba(11,13,20,0.65)"
-              : "rgba(242,245,251,0.65)",
-            backdropFilter: "blur(60px)",
-            WebkitBackdropFilter: "blur(60px)",
-          }}
-        />
-
         <div className="max-w-[1300px] mx-auto w-full relative z-20 flex flex-col flex-grow justify-center mt-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-stretch w-full">
             <div className="max-w-[600px] pt-4 md:pt-0 flex flex-col justify-center py-6">
-              {/* Refined Humanized Badge */}
               <div className="flex items-center gap-3 mb-8 self-start">
+                {/* Subtle structural accent line instead of a glowing dot */}
                 <div
                   className="w-[3px] h-[14px] rounded-full"
                   style={{ background: t.cyan }}
-                />
+                ></div>
+
+                {/* Clean, readable typography instead of microscopic all-caps */}
                 <p
                   className="text-[13px] font-medium tracking-[0.5px] m-0"
                   style={{ color: t.muted }}
@@ -1066,7 +1055,7 @@ export default function App() {
               { v: `${stats[0]}+`, l: "Years of Excellence" },
               { v: `${stats[1].toLocaleString()}+`, l: "Projects Completed" },
               { v: `${stats[2]}+`, l: "Service Types" },
-              { v: `#${stats[3]}`, l: "In Horana, Sri Lanka" },
+              { v: `#${stats[3]}`, l: "In Kalutara District, Sri Lanka" },
             ].map((s, i) => (
               <div
                 key={s.l}
@@ -1211,7 +1200,7 @@ export default function App() {
                   style={{ color: t.muted }}
                 >
                   <strong style={{ color: t.txt, fontWeight: 700 }}>
-                    2010 —
+                    2023 —
                   </strong>{" "}
                   As trends evolved, we expanded our horizons, introducing
                   advanced LED signage, precise CNC routing, and
@@ -1883,7 +1872,7 @@ export default function App() {
                       Vehicle Protection &amp; Styling
                     </option>
                     <option style={{ background: t.bgC }}>
-                      Light Boards &amp; Signage
+                      Light Boards With Animations
                     </option>
                     <option style={{ background: t.bgC }}>
                       Advertising &amp; Branding
