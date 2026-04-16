@@ -16,8 +16,8 @@ import gallery7 from "./assets/gallery-7.jpg";
 import gallery8 from "./assets/gallery-8.jpg";
 
 // --- Local Video Imports ---
-import heroVideo1 from "./videos/hero-video-1.mov";
-import heroVideo2 from "./videos/hero-video-2.mov";
+import heroVideo1 from "/videos/hero-video-1.mov";
+import heroVideo2 from "/videos/hero-video-2.mov";
 
 /* ─── COLOR PALETTE — extracted directly from the TS logo ─────────────────
    Primary Blue  #1E7FD8   (main blue square)
