@@ -907,7 +907,7 @@ export default function App() {
               <div className="absolute -inset-4 bg-[#0f86c6] opacity-10 blur-2xl rounded-full pointer-events-none hidden md:block" />
 
               <div
-                className="w-full relative overflow-hidden group aspect-video md:aspect-auto md:h-full flex flex-col"
+                className="w-full relative overflow-hidden group aspect-[4/3] md:aspect-auto md:h-full flex flex-col"
                 style={{
                   borderRadius: "12px",
                   background: "#000",
